@@ -1,0 +1,12 @@
+# en/LC_MESSAGES/bot.po
+msgid "Add Friend"
+msgstr "Add Friend"
+
+msgid "Delete Friend"
+msgstr "Delete Friend"
+
+msgid "Show Friends List"
+msgstr "Show Friends List"
+
+msgid "Back"
+msgstr "Back"

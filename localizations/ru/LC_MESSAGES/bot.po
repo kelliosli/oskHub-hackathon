@@ -1,0 +1,43 @@
+# ru/LC_MESSAGES/bot.po
+msgid "Add Friend"
+msgstr "Добавить друга"
+
+msgid "Delete Friend"
+msgstr "Удалить друга"
+
+msgid "Show Friends List"
+msgstr "Показать список друзей"
+
+msgid "Back"
+msgstr "Назад"
+
+
+msgid "🚨 Emergency 🚨"
+msgstr "🚨 Экстренная помощь 🚨"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Resources"
+msgstr "Ресурсы"
+
+msgid "Close Friends"
+msgstr "Близкие друзья"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "🚨 Emergency 🚨"
+msgstr "🚨 Төтенше жағдай 🚨"
+
+msgid "Settings"
+msgstr "Параметрлер"
+
+msgid "Resources"
+msgstr "Ресурстар"
+
+msgid "Close Friends"
+msgstr "Жақын достар"
+
+msgid "Language"
+msgstr "Тіл"
