@@ -25,7 +25,7 @@ from ans import res
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from keyboards import main_menu_kb, emergency_kb, settings_kb
-from utils import send_message_to_contacts
+# from utils import send_message_to_contacts
 
 language = "en"
 
@@ -41,6 +41,18 @@ router = Router()
 # Handle the /start command
 @router.message(Command("start"))
 async def send_welcome(message: Message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Check if the user is already registered
+    cursor.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,))
+    user = cursor.fetchone()
+
+    # If user not found, insert the new user into the database
+    if user is None:
+        cursor.execute("INSERT INTO users (user_id, username) VALUES (?, ?)", (user_id, username))
+        conn.commit()
     await message.answer(
         "Welcome! Choose an option:",
         reply_markup=main_menu_kb.as_markup(resize_keyboard=True),
@@ -141,7 +153,7 @@ async def add_friends_handler(message: Message):
 
 @router.message(F.text == "Resources")
 async def add_resources_handler(message: Message):
-    await message.answer("Resources!!!")
+    await message.answer(res)
 
 
 @router.message(F.text == "Добавить друга")
@@ -283,3 +295,4 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     init_db()
     asyncio.run(main())
+    
