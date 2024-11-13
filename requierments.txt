@@ -1,0 +1,4 @@
+aiogram==3.0.0b1  # Aiogram for Telegram bot framework
+requests==2.28.1  # For making HTTP requests to APIs (e.g., OpenStreetMap, Google Maps)
+ # SQLite for database operations (usually pre-installed with Python)
+googlemaps==4.5.3

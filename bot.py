@@ -5,7 +5,7 @@ from config import BOT_TOKEN
 from handlers import emergency, settings, resources
 from keyboards.main_menu import main_menu_keyboard
 from utils.location_utils import request_location_keyboard
-from locales import en, ru, kz  # Import language resources
+# from locales import en, ru, kz  # Import language resources
 
 # Initialize bot and dispatcher
 bot = Bot(token=BOT_TOKEN)
