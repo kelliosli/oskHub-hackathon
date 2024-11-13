@@ -11,8 +11,9 @@ from aiogram.types import (
     CallbackQuery,
     ReplyKeyboardRemove
 )
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from keyboards import main_menu_kb, emergency_kb, settings_kb, languages_kb, keyboard_friend, create_friends_keyboard
+from keyboards import main_menu_kb, emergency_kb, settings_kb, languages_kb, keyboard_friend, create_friends_keyboard,keyboard_back
 from db import get_db_connection, init_db
 from forms import FriendForm
 from ans import res
@@ -54,12 +55,15 @@ async def handle_option(callback_query: CallbackQuery):
 @router.message(F.text == "Добавить друга")
 async def add_friend_handler(message: Message, state: FSMContext):
     await state.set_state(FriendForm.adding)
-    await message.answer("Отправьте профиль друга для добавления (@username или user_id):")
+    await message.answer("Отправьте профиль друга для добавления (@username или user_id):", reply_markup=keyboard_back.as_markup(resize_keyboard=True))
 
 @router.message(F.text, FriendForm.adding)
 async def process_add_friend(message: Message, state: FSMContext):
     friend_username = message.text
-    if friend_username.startswith('@')==False:
+    if friend_username == "Назад":
+        await message.answer("Отмена", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
+        await state.clear()
+    elif friend_username.startswith('@')==False:
         await message.answer("Пожалуста введите коректное имя пользователя начинающийся с @")
     else:
         friend_id = message.from_user.id  # Replace as needed
@@ -72,79 +76,63 @@ async def process_add_friend(message: Message, state: FSMContext):
         conn.commit()
         conn.close()
 
-        await message.answer(f"{friend_username} добавлен в список друзей.")
+        await message.answer(f"{friend_username} добавлен в список друзей.", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
         await state.clear()
 
 # Remove friend handler
 @router.message(F.text == "Удалить друга")
-async def remove_friend_handler(message: Message):
+async def remove_friend_handler(message: Message, state: FSMContext):
     user_id = message.from_user.id
-    keyboard = create_friends_keyboard(user_id)
-    await message.answer("Выберите друга для удаления:", reply_markup=keyboard)
+    # keyboard = create_friends_keyboard(user_id)
+    await state.set_state(FriendForm.removing)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT username, user_id FROM friends WHERE user_id = ?', (user_id,))
+    friends = cursor.fetchall()
+    conn.close()
+    keyboard1 = ReplyKeyboardBuilder()
+    keyboard1.button(text='Назад')
+    for username, friend_id in friends:
+        keyboard1.button(text=username)
+    await message.answer("Выберите друга для удаления:", reply_markup=keyboard1.as_markup(resize_keyboard=True))
 
 # Callback query handler for removing friend
-@router.callback_query(F.data.startswith("friend_"))
-async def callback_delete_friend_handler(call: CallbackQuery):
-    friend_id = int(call.data.split("_")[1])
-    user_id = call.from_user.id
+@router.message(F.text, FriendForm.removing)
+async def callback_delete_friend_handler(message: Message, state: FSMContext):
+    username = message.text[1:]
+    if username == "Назад":
+        await message.answer("Отмена", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
+        await state.clear()
+    else:
+        user_id = message.from_user.id
+        print(username, user_id)
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM friends WHERE user_id = ? AND username = ?', (user_id, username))
+        conn.commit()
+        conn.close()
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM friends WHERE user_id = ? AND friend_id = ?', (user_id, friend_id))
-    conn.commit()
-    conn.close()
-
-    await call.answer("Друг удалён из списка.")
-    await call.message.delete()
-
-# Edit friend handler
-@router.message(F.text == "Редактировать друга")
-async def edit_friend_handler(message: Message):
-    user_id = message.from_user.id
-    keyboard = create_friends_keyboard(user_id)
-    await message.answer("Выберите друга для редактирования:", reply_markup=keyboard)
-
-@router.callback_query(F.data.startswith("friend_"))
-async def callback_edit_friend_handler(call: CallbackQuery, state: FSMContext):
-    friend_id = int(call.data.split("_")[1])
-    await state.update_data(friend_id=friend_id)
-    await state.set_state(FriendForm.editing_username)
-    await call.message.answer("Введите новое имя для друга:")
-
-@router.message(F.text, FriendForm.editing_username)
-async def process_edit_friend(message: Message, state: FSMContext):
-    new_username = message.text
-    data = await state.get_data()
-    friend_id = data['friend_id']
-    user_id = message.from_user.id
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('UPDATE friends SET username = ? WHERE user_id = ? AND friend_id = ?',
-                   (new_username, user_id, friend_id))
-    conn.commit()
-    conn.close()
-
-    await message.answer(f"Имя друга обновлено на {new_username}.")
-    await state.clear()
+        await message.answer(f"Друг удалён из списка.{username}", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
+        await state.clear()
 
 
-@router.message(F.text == "Редактировать друга")
-async def edit_friend_handler(message: Message):
-    user_id = message.from_user.id
-    keyboard = create_friends_keyboard(user_id)
-    await message.answer("Выберите друга для редактирования:", reply_markup=keyboard)
     
 # Show friends handler
 @router.message(F.text == "Показать список друзей")
 async def show_friends_handler(message: Message):
     user_id = message.from_user.id
-    keyboard = create_friends_keyboard(user_id)
-
-    if keyboard.inline_keyboard:
-        await message.answer("Ваши друзья:", reply_markup=keyboard)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT username, user_id FROM friends WHERE user_id = ?', (user_id,))
+    friends = cursor.fetchall()
+    conn.close()
+    res = ''
+    for username, friend_id in friends:
+        res += f'{username} '
+    if res:
+        await message.answer(f"Ваши друзья: {res}", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
     else:
-        await message.answer("Список друзей пуст.")
+        await message.answer("Список друзей пуст.", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
 
 # Register router to dispatcher
 dp.include_router(router)

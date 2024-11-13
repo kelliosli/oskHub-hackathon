@@ -5,3 +5,4 @@ class FriendForm(StatesGroup):
     removing = State()
     editing_select = State()
     editing_username = State()
+    
