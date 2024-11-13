@@ -21,16 +21,6 @@ router = Router()
 contacts_id = [5125986155, 499146021]
 
 
-async def send_message_to_contacts(contacts_id: list, message: str):
-    """Send a message to all contacts in the list."""
-    for user_id in contacts_id:
-        try:
-            await bot.send_message(user_id, message)
-            print(f"Message sent to {user_id}")
-        except Exception as e:
-            print(f"Failed to send message to {user_id}: {e}")
-
-
 # Handle the /start command
 @router.message(Command("start"))
 async def send_welcome(message: Message):
@@ -45,9 +35,6 @@ async def handle_option(callback_query: CallbackQuery):
     print("user_name:", callback_query.from_user)
 
     if route == "emergency":
-        await send_message_to_contacts(
-            contacts_id, callback_query.from_user.username + " IS IN DANGER!"
-        )
         await callback_query.message.answer(
             "What is your emergency:", reply_markup=emergency_kb
         )

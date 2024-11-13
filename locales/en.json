@@ -1,10 +1,22 @@
 {
   "welcome": "Welcome to Rescuer Bot! Choose an option:",
-  "emergency": "Emergency",
+  "emergency": "Emergency 🚨",
   "settings": "Settings",
   "resources": "Resources",
   "manage_contacts": "Manage Contacts",
   "select_language": "Select Language",
   "bleeding_instructions": "Apply pressure to the wound and keep elevated if possible.",
-  "fire_instructions": "Evacuate immediately and call the fire brigade."
+  "fire_instructions": "Evacuate immediately and call the fire brigade.",
+  "add_contact": "Add contact",
+  "edit_contact": "Edit contact",
+  "delete_contact": "Delete contact",
+  "contact_name": "Contact name",
+  "contact_number": "Contact number",
+  "save_contact": "Save contact",
+  "edit": "Edit",
+  "delete": "Delete",
+  "name": "Name",
+  "number": "Number",
+  "save": "Save",
+  "cancel": "Cancel"
 }
