@@ -3,27 +3,29 @@ from aiogram.types import (
     InlineKeyboardMarkup,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+import numpy as np
+import pandas as pd
 from db import get_db_connection
 from traumas import load_trauma_data
 
-language = "en"  # Default language
+language = "ru"  # Default language
 
 
 # Main Menu
 main_menu_kb = ReplyKeyboardBuilder()
-main_menu_kb.button(text="🚨 Emergency 🚨", request_location=True)
-main_menu_kb.button(text="Settings")
-main_menu_kb.button(text="Resources")
+main_menu_kb.button(text="🚨", request_location=True)
+main_menu_kb.button(text="⚙️")
+main_menu_kb.button(text="📚")
 # =
 
 # Settings
 settings_kb = ReplyKeyboardBuilder()
 settings_kb.button(text="Близкие друзья")
-settings_kb.button(text="Язык")
+settings_kb.button(text="Выйти")
 # =
 
 # Emergency
-traumas = load_trauma_data(language)
+traumas = load_trauma_data()
 emergency_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text=trauma_data["title"], callback_data=trauma_file)]
@@ -32,9 +34,92 @@ emergency_kb = InlineKeyboardMarkup(
 )
 # =
 
-# def get_keyboard_of_hospitals(lat, long):
-#
+# Load the CSV file into a DataFrame
+hospitals_df = pd.read_csv("assets/saqbol-hospitals.csv")
+polices_df = pd.read_csv("assets/saqbol-polices.csv")
 
+
+def get_keyboard_of_hospitals(lat, long):
+    temp_hospitals_df = hospitals_df
+
+    # Calculate the distance using the Pythagorean theorem approximation
+    temp_hospitals_df["coordinate_distance"] = np.sqrt(
+        (temp_hospitals_df["latitude"] - lat) ** 2
+        + (temp_hospitals_df["longitude"] - long) ** 2
+    )
+
+    # Sort by distance in ascending order
+    temp_hospitals_df = temp_hospitals_df.sort_values(by="coordinate_distance")
+
+    ###
+
+    temp_polices_df = polices_df
+
+    # Calculate the distance using the Pythagorean theorem approximation
+    temp_polices_df["coordinate_distance"] = np.sqrt(
+        (temp_polices_df["latitude"] - lat) ** 2
+        + (temp_polices_df["longitude"] - long) ** 2
+    )
+
+    # Sort by distance in ascending order
+    temp_polices_df = temp_polices_df.sort_values(by="coordinate_distance")
+
+    inline_keyboard_buttons = []
+
+    for index, row in temp_hospitals_df.head(5).iterrows():
+        inline_keyboard_buttons.append(
+            [
+                InlineKeyboardButton(
+                    text=row["name_ru"],
+                    url=f"https://www.google.com/maps/search/?api=1&query={row['latitude']},{row['longitude']}",
+                )
+            ]
+        )
+
+    for index, row in temp_polices_df.head(2).iterrows():
+        inline_keyboard_buttons.append(
+            [
+                InlineKeyboardButton(
+                    text=row["name_ru"],
+                    url=f"https://www.google.com/maps/search/?api=1&query={row['latitude']},{row['longitude']}",
+                )
+            ]
+        )
+
+    # Create an inline keyboard with buttons for the first 5 hospitals
+    keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard_buttons)
+
+    return keyboard
+
+
+"""
+
+def get_keyboard_of_hospitals(lat, long):
+    temp_df = hospitals_df
+
+    # Calculate the distance using the Pythagorean theorem approximation
+    temp_df["coordinate_distance"] = np.sqrt(
+        (temp_df["latitude"] - lat) ** 2 + (temp_df["longitude"] - long) ** 2
+    )
+
+    # Sort by distance in ascending order
+    temp_df = temp_df.sort_values(by="coordinate_distance")
+
+    # Create an inline keyboard with buttons for the first 5 hospitals
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=row["name_ru"],
+                    url=f"https://www.google.com/maps/search/?api=1&query={row['latitude']},{row['longitude']}",
+                )
+            ]
+            for index, row in temp_df.head(5).iterrows()
+        ]
+    )
+
+    return keyboard
+"""
 
 languages_kb = InlineKeyboardMarkup(
     inline_keyboard=[

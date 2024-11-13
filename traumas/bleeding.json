@@ -1,33 +1,9 @@
 {
-  "title": {
-    "en": "Bleeding",
-    "ru": "Кровотечение",
-    "kz": "Қан кету"
-  },
+  "title": "Кровотечение",
   "steps": [
     {
-      "text": {
-        "en": "Apply pressure to the wound to stop bleeding.",
-        "ru": "Наложите давление на рану, чтобы остановить кровотечение.",
-        "kz": "Қан кетуді тоқтату үшін жараға қысым жасаңыз."
-      },
-      "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F247478%2Fpexels-photo-247478.jpeg%3Fcs%3Dsrgb%26dl%3Dclouds-cloudy-conifers-247478.jpg%26fm%3Djpg&f=1&nofb=1&ipt=5ed2b0341753c24e887114b3d37e4a2c03f9e2adeabd08f9418e8cba95206adc&ipo=images"
-    },
-    {
-      "text": {
-        "en": "Keep the wound elevated if possible.",
-        "ru": "Держите рану приподнятой, если это возможно.",
-        "kz": "Жараны мүмкіндігінше жоғары ұстаңыз."
-      },
-      "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F371633%2Fpexels-photo-371633.jpeg%3Fcs%3Dsrgb%26dl%3Dclouds-country-daylight-371633.jpg%26fm%3Djpg&f=1&nofb=1&ipt=09439f9798cbf0c3f5a058163ec016253fd7813884efb38b64e0deb5a48f77f0&ipo=images"
-    },
-    {
-      "text": {
-        "en": "Clean the wound with water and apply a sterile bandage.",
-        "ru": "Очистите рану водой и наложите стерильную повязку.",
-        "kz": "Жараны сумен тазалап, стерильді таңғыш қойыңыз."
-      },
-      "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.squarespace-cdn.com%2Fcontent%2Fv1%2F54a4656fe4b037e9babd6ec9%2F1525669925757-IR2EG4NQ7B7SCU776P1W%2Fke17ZwdGBToddI8pDm48kHH9S2ID7_bpupQnTdrPcoF7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z4YTzHvnKhyp6Da-NYroOW3ZGjoBKy3azqku80C789l0nQwvinDXPV4EYh2MRzm-RRB5rUELEv7EY2n0AZOrEupxpSyqbqKSgmzcCPWV5WMiQ%2FBlog%2Bimages-17.jpg&f=1&nofb=1&ipt=db2a45edd13ee7c7d8ab92a81a4be846f84530bee50ee4f68cc4a66bce653f23&ipo=images"
+      "text": "Что делать:\nПриложите к ране чистую ткань и надавите на нее, чтобы остановить кровотечение.\nПоднимите раненую часть тела выше уровня сердца, если это возможно.\nПри сильном кровотечении наложите жгут, но помните, что жгут можно оставлять не дольше часа.\nВызовите скорую помощь при артериальном кровотечении (кровь бьет струей).",
+      "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.OpWktJnxCm3H4f6wPu7d0gHaGt%26pid%3DApi&f=1&ipt=638870281e910bdae14a6df39fcda6b8566748974a0add652966d17b9b8b76c8&ipo=images"
     }
   ]
 }

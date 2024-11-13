@@ -1,4 +1,4 @@
-token = "8007691524:AAHlAWiy_hFIAX_R_YdNwJlAKNNrp38A4xQ"
+token = "7698358102:AAFO1_CPrcLjJUSlIMfxSWBAl0s8vWuJNtw"
 
 
 import json
@@ -14,6 +14,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from keyboards import (
+    get_keyboard_of_hospitals,
     languages_kb,
     keyboard_friend,
     create_friends_keyboard,
@@ -25,9 +26,9 @@ from ans import res
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from keyboards import main_menu_kb, emergency_kb, settings_kb
-from utils import send_message_to_contacts
+from ans import res
 
-language = "en"
+language = "ru"
 
 # Initialize bot and dispatcher
 bot = Bot(token=token)
@@ -41,8 +42,23 @@ router = Router()
 # Handle the /start command
 @router.message(Command("start"))
 async def send_welcome(message: Message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Check if the user is already registered
+    cursor.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,))
+    user = cursor.fetchone()
+
+    # If user not found, insert the new user into the database
+    if user is None:
+        print("addddd", (user_id, username))
+        cursor.execute(
+            "INSERT INTO users (user_id, username) VALUES (?, ?)", (user_id, username)
+        )
+        conn.commit()
     await message.answer(
-        "Welcome! Choose an option:",
+        "Добро пожаловать! Выберите вариант:",
         reply_markup=main_menu_kb.as_markup(resize_keyboard=True),
     )
 
@@ -50,14 +66,29 @@ async def send_welcome(message: Message):
 @router.message(F.location)
 async def handle_location(message: Message):
     lat = message.location.latitude
-    lon = message.location.longitude
-    reply = "latitude:  {}\nlongitude: {}".format(lat, lon)
+    long = message.location.longitude
+    reply = "Ваши координаты: {}, {}\n".format(lat, long)
     # await message.answer(reply, reply_markup=ReplyKeyboardRemove())
-    for username, user_id in get_friends_user_ids(message.from_user.id):
-        await bot.send_message(user_id, message.from_user.username + " IS IN DANGER!")
+    for user_id in get_friends_user_ids(message.from_user.id):
+        print("SEND TO MY FRIEND", user_id)
+        await bot.send_message(
+            chat_id=user_id,
+            text="@" + message.from_user.username + " В ОПАСНОСТИ!",
+        )
+        await bot.send_location(
+            chat_id=user_id,
+            latitude=lat,
+            longitude=long,
+        )
+
+    await bot.send_message(
+        chat_id=message.from_user.id,
+        text="Выберите больницу или полицейский участок:",
+        reply_markup=get_keyboard_of_hospitals(lat=lat, long=long),
+    )
 
     await message.answer(
-        reply + "\tWhat is your emergency:",
+        reply + "Что у вас за чрезвычайная ситуация?:",
         reply_markup=emergency_kb,
     )
 
@@ -94,7 +125,7 @@ async def handle_trauma_step(callback_query: types.CallbackQuery):
 
     # Get the current step
     step = trauma_data["steps"][step_index]
-    step_text = step["text"].get(language, step["text"][language])
+    step_text = step["text"]
     step_image = step["image"]
 
     # Send the step message with image
@@ -104,7 +135,7 @@ async def handle_trauma_step(callback_query: types.CallbackQuery):
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="Next Step",
+                        text="Далее",
                         callback_data=f"next_step/{trauma_file}/{step_index + 1}",
                     )
                 ]
@@ -123,10 +154,10 @@ async def handle_trauma_step(callback_query: types.CallbackQuery):
 # ==
 
 
-@router.message(F.text == "Settings")
+@router.message(F.text == "⚙️")
 async def add_settings_handler(message: Message):
     await message.answer(
-        "Settings!!!",
+        "Настройки",
         reply_markup=settings_kb.as_markup(resize_keyboard=True),
     )
 
@@ -134,21 +165,21 @@ async def add_settings_handler(message: Message):
 @router.message(F.text == "Близкие друзья")
 async def add_friends_handler(message: Message):
     await message.answer(
-        "Friends",
+        "Друзья",
         reply_markup=keyboard_friend.as_markup(resize_keyboard=True),
     )
 
 
-@router.message(F.text == "Resources")
+@router.message(F.text == "📚")
 async def add_resources_handler(message: Message):
-    await message.answer("Resources!!!")
+    await message.answer(res, reply_markup=main_menu_kb.as_markup(resize_keyboard=True))
 
 
 @router.message(F.text == "Добавить друга")
 async def add_friend_handler(message: Message, state: FSMContext):
     await state.set_state(FriendForm.adding)
     await message.answer(
-        "Отправьте профиль друга для добавления (@username или user_id):",
+        "Отправьте профиль друга для добавления (@username):",
         reply_markup=keyboard_back.as_markup(resize_keyboard=True),
     )
 
@@ -205,7 +236,6 @@ async def remove_friend_handler(message: Message, state: FSMContext):
         "SELECT username, user_id FROM friends WHERE user_id = ?", (user_id,)
     )
     friends = cursor.fetchall()
-    print("friends: ", friends)
     conn.close()
     keyboard1 = ReplyKeyboardBuilder()
     keyboard1.button(text="Назад")

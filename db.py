@@ -37,15 +37,22 @@ def get_friends_user_ids(user_id):
     # Step 1: Fetch friends' usernames
     cursor.execute("SELECT username FROM friends WHERE user_id = ?", (user_id,))
     friends = cursor.fetchall()
+    print("#1 friends", friends)
 
     # Step 2: Find corresponding user_id for each friend (by joining the users table)
     friends_user_ids = []
     for friend in friends:
         username = friend[0]
-        cursor.execute("SELECT user_id FROM users WHERE username = ?", (username,))
+        # delete first character
+        username = username[1:]
+        print("username: ", username)
+        cursor.execute("SELECT user_id FROM users where username = ?", (username,))
         user = cursor.fetchone()
+        print("user: ", user)
         if user:
             friends_user_ids.append(user[0])
+
+    print("#2 friends", friends_user_ids)
 
     conn.close()
     return friends_user_ids
