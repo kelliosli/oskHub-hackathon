@@ -8,6 +8,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     CallbackQuery,
 )
+import sqlite3
 
 # Initialize bot and dispatcher
 bot = Bot(token=token)
