@@ -8,7 +8,7 @@ from aiogram.types import (
     Message,
     CallbackQuery,
 )
-from keyboards import main_menu_kb
+from keyboards import main_menu_kb, emergency_kb, settings_kb, languages_kb
 
 # Initialize bot and dispatcher
 bot = Bot(token=token)
@@ -27,15 +27,24 @@ async def send_welcome(message: Message):
 # Handle callback queries from inline keyboard
 @router.callback_query()
 async def handle_option(callback_query: CallbackQuery):
-    if callback_query.data == "emergency":
+    route = callback_query.data
+
+    if route == "emergency":
         await callback_query.message.answer(
-            "Welcome! Choose an option:", reply_markup=main_menu_kb
+            "What is your emergency:", reply_markup=emergency_kb
         )
-    elif callback_query.data == "settings":
-        response_text = "You chose Option 2!"
-    elif callback_query.data == "resources":
-        response_text = "You chose Option 3!"
+    elif route == "settings":
+        await callback_query.message.answer("Settings:", reply_markup=settings_kb)
+    elif route == "resources":
+        response_text = "Resources!"
+    elif route == "contacts":
+        response_text = "Contacts!"
+    elif route == "language":
+        await callback_query.message.answer(
+            "What language you want to choose", reply_markup=languages_kb
+        )
     else:
+        # traumas
         response_text = "Unknown option."
 
     await callback_query.message.answer(response_text)
