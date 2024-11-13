@@ -49,11 +49,11 @@ keyboard_friend.button(text='Назад')
 def create_friends_keyboard(user_id: int):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT username, friend_id FROM friends WHERE user_id = ?', (user_id,))
+    cursor.execute('SELECT username, user_id FROM friends WHERE user_id = ?', (user_id,))
     friends = cursor.fetchall()
     conn.close()
 
     keyboard = InlineKeyboardBuilder()
     for username, friend_id in friends:
-        keyboard.button(text=username, callback_data=f"friend_{friend_id}")
+        keyboard.button(text=username, callback_data=f"friend_{username}")
     return keyboard.as_markup()

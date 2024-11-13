@@ -60,7 +60,7 @@ async def add_friend_handler(message: Message, state: FSMContext):
 async def process_add_friend(message: Message, state: FSMContext):
     friend_username = message.text
     if friend_username.startswith('@')==False:
-    
+        await message.answer("Пожалуста введите коректное имя пользователя начинающийся с @")
     else:
         friend_id = message.from_user.id  # Replace as needed
         user_id = message.from_user.id
