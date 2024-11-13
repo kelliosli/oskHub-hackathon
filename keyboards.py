@@ -12,14 +12,15 @@ language = "en"  # Default language
 # Main Menu
 main_menu_kb = ReplyKeyboardBuilder()
 main_menu_kb.button(text="🚨 Emergency 🚨", request_location=True)
-main_menu_kb.button(text="Settings")
-main_menu_kb.button(text="Resources")
+main_menu_kb.button(text="Настройки")
+main_menu_kb.button(text="Ресурсы ")
 # =
 
 # Settings
 settings_kb = ReplyKeyboardBuilder()
 settings_kb.button(text="Близкие друзья")
 settings_kb.button(text="Язык")
+settings_kb.button(text="Назад")
 # =
 
 # Emergency

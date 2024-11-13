@@ -135,7 +135,7 @@ async def handle_trauma_step(callback_query: types.CallbackQuery):
 # ==
 
 
-@router.message(F.text == "Settings")
+@router.message(F.text == "Настройки")
 async def add_settings_handler(message: Message):
     await message.answer(
         "Settings!!!",
@@ -151,10 +151,13 @@ async def add_friends_handler(message: Message):
     )
 
 
-@router.message(F.text == "Resources")
+@router.message(F.text == "Ресурсы")
 async def add_resources_handler(message: Message):
-    await message.answer(res)
+    await message.answer(res, reply_markup=main_menu_kb.as_markup(resize_keyboard=True))
 
+@router.message(F.text == "Назад")
+async def add_resources_handler(message: Message):
+    await message.answer(res, reply_markup=main_menu_kb.as_markup(resize_keyboard=True))
 
 @router.message(F.text == "Добавить друга")
 async def add_friend_handler(message: Message, state: FSMContext):
@@ -163,6 +166,7 @@ async def add_friend_handler(message: Message, state: FSMContext):
         "Отправьте профиль друга для добавления (@username или user_id):",
         reply_markup=keyboard_back.as_markup(resize_keyboard=True),
     )
+    
 
 
 @router.message(F.text == "Выйти")
