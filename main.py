@@ -1,8 +1,8 @@
-token = "7698358102:AAFO1_CPrcLjJUSlIMfxSWBAl0s8vWuJNtw"
+token = "8007691524:AAHlAWiy_hFIAX_R_YdNwJlAKNNrp38A4xQ"
 
 
 import logging, asyncio, sys
-from aiogram import Bot, Dispatcher, Router, types, F
+from aiogram import F, Bot, Dispatcher, Router, types, F
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
@@ -13,10 +13,13 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from keyboards import main_menu_kb, emergency_kb, settings_kb, languages_kb, keyboard_friend, create_friends_keyboard,keyboard_back
+from keyboards import languages_kb, keyboard_friend, create_friends_keyboard,keyboard_back
 from db import get_db_connection, init_db
 from forms import FriendForm
 from ans import res
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
+
 
 # Initialize bot and dispatcher
 bot = Bot(token=token)
@@ -26,17 +29,62 @@ dp = Dispatcher(storage=storage)
 # Define a router for the commands and callbacks
 router = Router()
 
+main_menu_kb = ReplyKeyboardBuilder()
+main_menu_kb.button(text="🚨 Emergency 🚨")
+main_menu_kb.button(text="Settings")
+main_menu_kb.button(text="Resources")
+
+settings_kb = ReplyKeyboardBuilder()
+settings_kb.button(text="Близкие друзья")
+settings_kb.button(text="Язык")
+
+emergency_kb = ReplyKeyboardBuilder()
+emergency_kb.button(text="Кровотечения")
+emergency_kb.button(text="Перелом")
+emergency_kb.button(text="Другое")
+emergency_kb.button(text="Кровотечения")
+emergency_kb.button(text="Перелом")
+emergency_kb.button(text="Другое")
+emergency_kb.button(text="Кровотечения")
+emergency_kb.button(text="Перелом")
+emergency_kb.button(text="Другое")
+emergency_kb.button(text="Кровотечения")
+emergency_kb.button(text="Перелом")
+emergency_kb.button(text="Другое")
+
 
 # Handle the /start command
 @router.message(Command("start"))
 async def send_welcome(message: Message):
-    await message.answer("Welcome! Choose an option:", reply_markup=main_menu_kb)
+    await message.answer(
+        "Welcome! Choose an option:",
+        reply_markup=main_menu_kb.as_markup(resize_keyboard=True),
+    )
+
+
+@router.message(F.text == "🚨 Emergency 🚨")
+async def add_emergency_handler(message: Message):
+    await message.answer(
+        "What is your emergency:",
+        reply_markup=emergency_kb.as_markup(resize_keyboard=True),
+    )
+
+
+@router.message(F.text == "Settings")
+async def add_settings_handler(message: Message):
+    await message.answer("Settings!!!")
+
+
+@router.message(F.text == "Resources")
+async def add_resources_handler(message: Message):
+    await message.answer("Resources!!!")
 
 
 # Handle callback queries from inline keyboard
 @router.callback_query()
 async def handle_option(callback_query: CallbackQuery):
     route = callback_query.data
+
     if route == "emergency":
         await callback_query.message.answer(
             "What is your emergency:", reply_markup=emergency_kb
@@ -44,9 +92,9 @@ async def handle_option(callback_query: CallbackQuery):
     elif route == "settings":
         await callback_query.message.answer("Settings:", reply_markup=settings_kb)
     elif route == "resources":
-        await callback_query.message.answer(res)
+        response_text = "Resources!"
     elif route == "contacts":
-        await callback_query.message.answer("Choose an option", reply_markup=keyboard_friend.as_markup(resize_keyboard=True))
+        response_text = "Contacts!"
     elif route == "language":
         await callback_query.message.answer(
             "What language you want to choose", reply_markup=languages_kb

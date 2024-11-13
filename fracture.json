@@ -1,0 +1,13 @@
+{
+  "title": "Fracture",
+  "steps": [
+    {
+      "text": "Stabilize the injured area without moving it.",
+      "image": "https://example.com/fracture_step1.jpg"
+    },
+    {
+      "text": "Apply a splint if you know how.",
+      "image": "https://example.com/fracture_step2.jpg"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "welcome": "Welcome to Rescuer Bot! Choose an option:",
+  "emergency": "Emergency",
+  "settings": "Settings",
+  "resources": "Resources",
+  "manage_contacts": "Manage Contacts",
+  "select_language": "Select Language",
+  "bleeding_instructions": "Apply pressure to the wound and keep elevated if possible.",
+  "fire_instructions": "Evacuate immediately and call the fire brigade."
+}

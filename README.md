@@ -1,3 +1,7 @@
+# TODO:
+
+    - send map to contacts [?]
+
 rescuer_bot/
 ├── bot.py # Main entry point for the bot
 ├── config.py # Configuration file for bot token, API keys, and settings
