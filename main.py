@@ -1,4 +1,4 @@
-token = "8007691524:AAHlAWiy_hFIAX_R_YdNwJlAKNNrp38A4xQ"
+token = "YOUR_TOKEN"
 
 
 import logging, asyncio, sys
