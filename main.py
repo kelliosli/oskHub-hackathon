@@ -1,4 +1,4 @@
-token = "7698358102:AAFO1_CPrcLjJUSlIMfxSWBAl0s8vWuJNtw"
+token = "YOUR_TOKEN"
 
 
 import json
