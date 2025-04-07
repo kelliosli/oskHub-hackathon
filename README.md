@@ -1,33 +1,27 @@
-# TODO:
+# 🚨 Emergency Helper Bot
 
-    - send map to contacts [?]
+A Telegram bot developed for the OskemenHub Hackathon, designed to provide rapid assistance in emergency situations in **Ust-Kamenogorsk (Oskemen)**.
 
-rescuer_bot/
-├── bot.py # Main entry point for the bot
-├── config.py # Configuration file for bot token, API keys, and settings
-├── requirements.txt # Python dependencies
-├── data/
-│ ├── db.py # Database connection and schema
-│ └── translations/ # Translation files for multiple languages
-├── handlers/
-│ ├── **init**.py # Initialize handlers package
-│ ├── emergency.py # Emergency handling logic
-│ ├── settings.py # User settings (emergency contacts, language)
-│ └── resources.py # Resource section (first aid tips, exercises)
-├── keyboards/
-│ ├── **init**.py # Initialize keyboards package
-│ ├── main_menu.py # Main menu buttons
-│ ├── emergency_menu.py # Buttons for emergency types
-│ └── settings_menu.py # Buttons for settings options
-├── localization/
-│ ├── en.json # English translations
-│ ├── ru.json # Russian translations
-│ └── kz.json # Kazakh translations
-├── services/
-│ ├── **init**.py # Initialize services package
-│ ├── map_service.py # Functions to handle map and routing logic
-│ └── notification_service.py # Service to send notifications to contacts
-└── utils/
-├── **init**.py # Initialize utils package
-├── i18n.py # Utility for handling translations
-└── location_utils.py # Geolocation and mapping helpers
+This bot includes:
+- **Emergency Button**: Instantly shares your geolocation with a predefined list of emergency contacts.
+- **Nearby Services**: Detects and displays **nearest police stations** and **hospitals** based on your current location.
+
+> Built using [Aiogram 3.x](https://docs.aiogram.dev/en/dev-3.x/), a modern and efficient Telegram Bot framework in Python.
+
+![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
+![Aiogram 3.x](https://img.shields.io/badge/aiogram-3.x-blue.svg)
+
+---
+
+## 📦 Features
+
+- 🔴 **Emergency SOS Button**  
+  Instantly send your real-time **GPS coordinates** to trusted contacts with a single tap.
+
+- 🏥 **Nearby Hospitals and Police Stations**  
+  Uses Telegram's geolocation services to fetch and display nearby **emergency services** in **Ust-Kamenogorsk**.
+
+- 🔐 **Privacy-First**  
+  Geolocation is only shared when users explicitly activate the emergency function.
+
+---
